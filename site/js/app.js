@@ -270,6 +270,12 @@ const startCarousel = (items) => {
   window.setInterval(renderSlide, 6000);
 };
 
+const getOfficialUrl = (park) => {
+  if (park.nps_url) return park.nps_url;
+  if (!park.unit_code) return "";
+  return `https://www.nps.gov/${park.unit_code.toLowerCase()}/index.htm`;
+};
+
 const renderCard = (park, index) => {
   const card = document.createElement("article");
   card.className = "park-card";
@@ -280,6 +286,10 @@ const renderCard = (park, index) => {
   const statusClass = park.visited ? "visited" : "unvisited";
   const visitDate = park.visited ? formatDate(park.visit_date) : "";
   const notes = park.review || park.notes || "No notes yet.";
+  const officialUrl = getOfficialUrl(park);
+  const officialLink = officialUrl
+    ? `<a class="park-site-link" href="${officialUrl}" target="_blank" rel="noopener">Official site</a>`
+    : "";
 
   card.innerHTML = `
     <div>
@@ -300,6 +310,7 @@ const renderCard = (park, index) => {
     <p>${notes}</p>
     <div class="park-actions">
       <span>${park.stamps?.length || 0} stamp(s)</span>
+      ${officialLink}
     </div>
   `;
 

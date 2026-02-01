@@ -24,6 +24,9 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      - name: Build visits index
+        run: python3 scripts/build-visits-index.py
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

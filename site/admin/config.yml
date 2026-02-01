@@ -11,79 +11,77 @@ public_folder: "/uploads"
 
 collections:
   - name: "visits"
-    label: "Visits"
-    files:
-      - label: "Park Visits"
-        name: "visits"
-        file: "site/data/visits.json"
-        format: "json"
+    label: "Park Visits"
+    folder: "site/visits"
+    create: false
+    format: "json"
+    extension: "json"
+    identifier_field: "park_name"
+    fields:
+      - label: "Unit code"
+        name: "unit_code"
+        widget: "string"
+        hint: "Required. Example: ACAD, YOSE, GRCA"
+      - label: "Park name"
+        name: "park_name"
+        widget: "string"
+        required: false
+        hint: "Display name shown in the editor list"
+      - label: "Visited"
+        name: "visited"
+        widget: "boolean"
+        default: false
+      - label: "Visit date"
+        name: "visit_date"
+        widget: "string"
+        required: false
+        hint: "Type a date (recommended format: YYYY-MM-DD)"
+      - label: "Visit note"
+        name: "visit_note"
+        widget: "string"
+        required: false
+      - label: "Rating"
+        name: "rating"
+        widget: "number"
+        required: false
+        value_type: "int"
+        min: 1
+        max: 5
+      - label: "Review"
+        name: "review"
+        widget: "text"
+        required: false
+      - label: "Notes"
+        name: "notes"
+        widget: "text"
+        required: false
+      - label: "Official NPS URL"
+        name: "nps_url"
+        widget: "string"
+        required: false
+        hint: "Optional override. Default uses https://www.nps.gov/{unit_code}/index.htm"
+      - label: "Highlights"
+        name: "highlights"
+        widget: "list"
+        required: false
+      - label: "Factoids"
+        name: "facts"
+        widget: "list"
+        required: false
         fields:
-          - label: "Visits"
-            name: "visits"
-            widget: "list"
-            summary: "{{fields.park_name}} ({{fields.unit_code}})"
-            fields:
-              - label: "Unit code"
-                name: "unit_code"
-                widget: "string"
-                hint: "Required. Example: ACAD, YOSE, GRCA"
-              - label: "Park name"
-                name: "park_name"
-                widget: "string"
-                required: false
-                hint: "Optional display name to help find entries in the editor"
-              - label: "Visited"
-                name: "visited"
-                widget: "boolean"
-                default: true
-              - label: "Visit date"
-                name: "visit_date"
-                widget: "datetime"
-                required: false
-                date_format: "YYYY-MM-DD"
-                time_format: false
-                format: "YYYY-MM-DD"
-              - label: "Visit note"
-                name: "visit_note"
-                widget: "string"
-                required: false
-              - label: "Rating"
-                name: "rating"
-                widget: "number"
-                required: false
-                value_type: "int"
-                min: 1
-                max: 5
-              - label: "Review"
-                name: "review"
-                widget: "text"
-                required: false
-              - label: "Notes"
-                name: "notes"
-                widget: "text"
-                required: false
-              - label: "Highlights"
-                name: "highlights"
-                widget: "list"
-                required: false
-              - label: "Factoids"
-                name: "facts"
-                widget: "list"
-                required: false
-                fields:
-                  - { label: "Label", name: "label", widget: "string" }
-                  - { label: "Value", name: "value", widget: "string" }
-              - label: "Stamp photos"
-                name: "stamps"
-                widget: "list"
-                required: false
-                fields:
-                  - { label: "Caption", name: "caption", widget: "string", required: false }
-                  - { label: "Image", name: "image", widget: "image" }
-              - label: "Photos"
-                name: "photos"
-                widget: "list"
-                required: false
-                fields:
-                  - { label: "Caption", name: "caption", widget: "string", required: false }
-                  - { label: "Image", name: "image", widget: "image" }
+          - { label: "Label", name: "label", widget: "string" }
+          - { label: "Value", name: "value", widget: "string" }
+      - label: "Stamp photos"
+        name: "stamps"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Caption", name: "caption", widget: "string", required: false }
+          - { label: "Image", name: "image", widget: "image" }
+      - label: "Photos"
+        name: "photos"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Caption", name: "caption", widget: "string", required: false }
+          - { label: "Image", name: "image", widget: "image" }

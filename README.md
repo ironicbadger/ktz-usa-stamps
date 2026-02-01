@@ -20,10 +20,11 @@ Open `http://localhost:8000/map.html` for the full-page map with filters.
 
 ## Editing content (Decap CMS)
 
-The CMS lives at `/admin/`. It edits `site/data/visits.json` (only the parks you
-have actually visited) and uploads photos to `site/uploads/`. The full list of
-park units lives in `site/data/parks.json` and is treated as read-only baseline
-data for performance.
+The CMS lives at `/admin/`. It edits one small file per park in `site/visits/`
+so the editor can list every park without loading a single huge JSON file.
+During deploy, a build step compiles those files into `site/data/visits.json`
+(only parks with visit data) and merges at runtime with `site/data/parks.json`
+as the read-only baseline.
 
 1. Update `site/admin/config.yml`:
    - Set `backend.repo` to your GitHub repo (`OWNER/REPO`).
@@ -81,8 +82,8 @@ Park entries live in `site/data/parks.json`:
 }
 ```
 
-Visited entries live in `site/data/visits.json` and override the base data by
-`unit_code`:
+Visited entries are edited per-park in `site/visits/*.json` and compiled into
+`site/data/visits.json`. They override base data by `unit_code`:
 
 ```json
 {
@@ -116,6 +117,20 @@ python3 scripts/build-parks.py
 
 The script overwrites `site/data/parks.json` and preserves the schema used by
 the UI and CMS.
+
+## Visits workflow
+
+Seed visit files for every park (one time):
+
+```bash
+python3 scripts/seed-visits.py
+```
+
+Rebuild the runtime visits index (needed after pulling edits locally):
+
+```bash
+python3 scripts/build-visits-index.py
+```
 
 ## Optional: Add official park banner images
 
