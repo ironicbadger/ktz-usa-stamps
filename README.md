@@ -20,8 +20,10 @@ Open `http://localhost:8000/map.html` for the full-page map with filters.
 
 ## Editing content (Decap CMS)
 
-The CMS lives at `/admin/`. It edits `site/data/parks.json` and uploads photos to
-`site/uploads/`.
+The CMS lives at `/admin/`. It edits `site/data/visits.json` (only the parks you
+have actually visited) and uploads photos to `site/uploads/`. The full list of
+park units lives in `site/data/parks.json` and is treated as read-only baseline
+data for performance.
 
 1. Update `site/admin/config.yml`:
    - Set `backend.repo` to your GitHub repo (`OWNER/REPO`).
@@ -74,6 +76,29 @@ Park entries live in `site/data/parks.json`:
       "notes": "...",
       "stamps": [{ "caption": "Stamp", "image": "/uploads/stamps.jpg" }],
       "photos": [{ "caption": "Sunset", "image": "/uploads/sunset.jpg" }]
+    }
+  ]
+}
+```
+
+Visited entries live in `site/data/visits.json` and override the base data by
+`unit_code`:
+
+```json
+{
+  "visits": [
+    {
+      "unit_code": "ACAD",
+      "park_name": "Acadia National Park",
+      "visited": true,
+      "visit_date": "2023-06-20",
+      "visit_note": "First sunrise on the coast.",
+      "rating": 4,
+      "review": "Coastal cliffs and sea air everywhere.",
+      "notes": "Jordan Pond popovers were worth it.",
+      "highlights": ["Cadillac Mountain", "Jordan Pond"],
+      "facts": [{ "label": "Stamp", "value": "Hulls Cove Visitor Center" }],
+      "photos": [{ "caption": "Cadillac Mountain view", "image": "/uploads/cadillac.jpg" }]
     }
   ]
 }

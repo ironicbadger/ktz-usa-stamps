@@ -1,4 +1,5 @@
-const DATA_URL = "data/parks.json";
+const PARKS_URL = "data/parks.json";
+const VISITS_URL = "data/visits.json";
 
 const elements = {
   visitedCount: document.getElementById("visited-count"),
@@ -48,6 +49,7 @@ const formatDate = (value) => {
 
 const normalize = (value) => String(value || "").toLowerCase();
 const normalizeState = (value) => String(value || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+const normalizeKey = (value) => String(value || "").trim().toLowerCase();
 
 const STATE_NAMES = {
   AL: "Alabama",
@@ -106,6 +108,33 @@ const STATE_NAMES = {
   GU: "Guam",
   AS: "American Samoa",
   MP: "Northern Mariana Islands",
+};
+
+const mergeParksWithVisits = (parks, visits) => {
+  const visitMap = new Map(
+    (visits || []).map((visit) => [
+      normalizeKey(visit.unit_code || visit.id || visit.park_id),
+      visit,
+    ])
+  );
+
+  return (parks || []).map((park) => {
+    const key = normalizeKey(park.unit_code || park.id);
+    const visit = visitMap.get(key);
+    if (!visit) return park;
+    return {
+      ...park,
+      ...visit,
+      id: park.id,
+      unit_code: park.unit_code,
+      name: park.name,
+      type: park.type,
+      region: park.region,
+      states: park.states,
+      lat: park.lat,
+      lng: park.lng,
+    };
+  });
 };
 
 const parseStateInput = (value) => {
@@ -447,9 +476,13 @@ const attachEvents = () => {
 
 const init = async () => {
   try {
-    const response = await fetch(DATA_URL);
-    const data = await response.json();
-    allParks = data.parks || [];
+    const [parksResponse, visitsResponse] = await Promise.all([
+      fetch(PARKS_URL),
+      fetch(VISITS_URL).catch(() => null),
+    ]);
+    const parksData = await parksResponse.json();
+    const visitsData = visitsResponse ? await visitsResponse.json() : { visits: [] };
+    allParks = mergeParksWithVisits(parksData.parks || [], visitsData.visits || []);
 
     computeStats(allParks);
     populateRegions(allParks);

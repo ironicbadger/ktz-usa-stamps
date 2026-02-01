@@ -1,4 +1,5 @@
-const DATA_URL = "data/parks.json";
+const PARKS_URL = "data/parks.json";
+const VISITS_URL = "data/visits.json";
 
 const elements = {
   region: document.getElementById("park-region"),
@@ -22,6 +23,35 @@ const parseDate = (value) => {
   if (!value) return null;
   const parsed = new Date(value);
   return Number.isNaN(parsed.getTime()) ? null : parsed;
+};
+
+const normalizeKey = (value) => String(value || "").trim().toLowerCase();
+
+const mergeParksWithVisits = (parks, visits) => {
+  const visitMap = new Map(
+    (visits || []).map((visit) => [
+      normalizeKey(visit.unit_code || visit.id || visit.park_id),
+      visit,
+    ])
+  );
+
+  return (parks || []).map((park) => {
+    const key = normalizeKey(park.unit_code || park.id);
+    const visit = visitMap.get(key);
+    if (!visit) return park;
+    return {
+      ...park,
+      ...visit,
+      id: park.id,
+      unit_code: park.unit_code,
+      name: park.name,
+      type: park.type,
+      region: park.region,
+      states: park.states,
+      lat: park.lat,
+      lng: park.lng,
+    };
+  });
 };
 
 const formatDate = (value) => {
@@ -119,9 +149,14 @@ const init = async () => {
   }
 
   try {
-    const response = await fetch(DATA_URL);
-    const data = await response.json();
-    const park = (data.parks || []).find((entry) => entry.id === parkId);
+    const [parksResponse, visitsResponse] = await Promise.all([
+      fetch(PARKS_URL),
+      fetch(VISITS_URL).catch(() => null),
+    ]);
+    const parksData = await parksResponse.json();
+    const visitsData = visitsResponse ? await visitsResponse.json() : { visits: [] };
+    const merged = mergeParksWithVisits(parksData.parks || [], visitsData.visits || []);
+    const park = merged.find((entry) => entry.id === parkId);
 
     if (!park) {
       elements.name.textContent = "Park not found";
