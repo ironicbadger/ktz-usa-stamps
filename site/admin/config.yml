@@ -1,0 +1,113 @@
+backend:
+  name: github
+  repo: YOUR_GITHUB_USER/ktz-usa-stamps
+  branch: main
+  # If you are using an OAuth proxy (recommended for GitHub Pages), set these.
+  # base_url: https://YOUR-OAUTH-PROXY.example.com
+  # auth_endpoint: auth
+
+media_folder: "site/uploads"
+public_folder: "/uploads"
+
+collections:
+  - name: "content"
+    label: "Content"
+    files:
+      - label: "Parks"
+        name: "parks"
+        file: "site/data/parks.json"
+        format: "json"
+        fields:
+          - label: "Parks"
+            name: "parks"
+            widget: "list"
+            summary: "{{fields.name}} ({{fields.region}})"
+            fields:
+              - label: "ID"
+                name: "id"
+                widget: "string"
+                hint: "Unique id for the URL, usually the unit code in lowercase (e.g., acad)"
+              - label: "Unit code"
+                name: "unit_code"
+                widget: "string"
+                required: false
+              - label: "Name"
+                name: "name"
+                widget: "string"
+              - label: "Type"
+                name: "type"
+                widget: "string"
+                default: "National Park"
+              - label: "Region"
+                name: "region"
+                widget: "string"
+                required: false
+              - label: "States"
+                name: "states"
+                widget: "list"
+                allow_add: true
+              - label: "Latitude"
+                name: "lat"
+                widget: "number"
+                required: false
+                value_type: "float"
+              - label: "Longitude"
+                name: "lng"
+                widget: "number"
+                required: false
+                value_type: "float"
+              - label: "Visited"
+                name: "visited"
+                widget: "boolean"
+                default: false
+              - label: "Visit date"
+                name: "visit_date"
+                widget: "datetime"
+                required: false
+                date_format: "YYYY-MM-DD"
+                time_format: false
+                format: "YYYY-MM-DD"
+              - label: "Visit note"
+                name: "visit_note"
+                widget: "string"
+                required: false
+              - label: "Rating"
+                name: "rating"
+                widget: "number"
+                required: false
+                value_type: "int"
+                min: 1
+                max: 5
+              - label: "Review"
+                name: "review"
+                widget: "text"
+                required: false
+              - label: "Notes"
+                name: "notes"
+                widget: "text"
+                required: false
+              - label: "Highlights"
+                name: "highlights"
+                widget: "list"
+                required: false
+              - label: "Factoids"
+                name: "facts"
+                widget: "list"
+                required: false
+                fields:
+                  - { label: "Label", name: "label", widget: "string" }
+                  - { label: "Value", name: "value", widget: "string" }
+              - label: "Stamp photos"
+                name: "stamps"
+                widget: "list"
+                required: false
+                fields:
+                  - { label: "Caption", name: "caption", widget: "string", required: false }
+                  - { label: "Image", name: "image", widget: "image" }
+              - label: "Photos"
+                name: "photos"
+                widget: "list"
+                required: false
+                fields:
+                  - { label: "Caption", name: "caption", widget: "string", required: false }
+                  - { label: "Image", name: "image", widget: "image" }

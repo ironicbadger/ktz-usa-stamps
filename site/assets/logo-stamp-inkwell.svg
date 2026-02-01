@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Stamp in inkwell logo">
+  <rect width="120" height="120" rx="24" fill="#ffffff" />
+  <circle cx="44" cy="44" r="26" fill="none" stroke="#2d4d45" stroke-width="6" />
+  <circle cx="44" cy="44" r="16" fill="none" stroke="#2d4d45" stroke-width="2" stroke-dasharray="4 4" />
+  <rect x="64" y="54" width="34" height="28" rx="8" fill="#2d4d45" />
+  <rect x="70" y="46" width="22" height="10" rx="4" fill="#2d4d45" />
+  <path d="M84 32c6 8 7 14 0 22c-7-8-6-14 0-22z" fill="#2e606c" />
+  <path d="M28 74h42v10H28z" fill="#2d4d45" opacity="0.18" />
+</svg>
