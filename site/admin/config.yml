@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: YOUR_GITHUB_USER/ktz-usa-stamps
+  repo: ironicbadger/ktz-usa-stamps
   branch: main
   # If you are using an OAuth proxy (recommended for GitHub Pages), set these.
   # base_url: https://YOUR-OAUTH-PROXY.example.com
