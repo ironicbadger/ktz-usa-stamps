@@ -1,15 +1,45 @@
 {
-  "unit_code": "BRCA",
   "park_name": "Bryce Canyon National Park",
-  "visited": false,
-  "visit_date": "",
-  "visit_note": "",
-  "rating": null,
-  "review": "",
-  "notes": "",
-  "highlights": [],
-  "facts": [],
-  "stamps": [],
-  "photos": [],
-  "nps_url": ""
+  "unit_code": "BRCA",
+  "elevation": "6,620ft - 9,115ft",
+  "established": "June 8, 1923",
+  "nps_url": "",
+  "visits": [
+    {
+      "photos": [
+        {
+          "image": "/uploads/img_2941-1.jpg",
+          "caption": "Hoodooooooos"
+        }
+      ],
+      "notes": "",
+      "visit_date": "2018-08-20",
+      "visit_note": "",
+      "facts": [
+        {
+          "label": "Bryce Amphitheater",
+          "value": "The park’s most iconic area holds the greatest concentration of hoodoos on Earth and is actually a series of bowl‑shaped amphitheaters (not a true canyon)."
+        }
+      ],
+      "stamps": [
+        {
+          "image": "http://nostalgia.esmartkid.com/passports4742.jpg"
+        }
+      ],
+      "blog_url": "https://blog.ktz.me/bryce-canyon/",
+      "review": "",
+      "rating": 5,
+      "highlights": []
+    },
+    {
+      "visit_date": "2019-06-12",
+      "visit_note": "With Caitlin and Dave!",
+      "photos": [
+        {
+          "image": "https://blog.ktz.me/content/images/2019/06/IMG_3025.jpg"
+        }
+      ],
+      "blog_url": "https://blog.ktz.me/utah/"
+    }
+  ]
 }

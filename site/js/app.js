@@ -21,6 +21,7 @@ const elements = {
   results: document.getElementById("results-count"),
   empty: document.getElementById("empty-state"),
   carouselImage: document.getElementById("carousel-image"),
+  carouselLink: document.getElementById("carousel-link"),
   carouselCaption: document.getElementById("carousel-caption"),
   carouselMeta: document.getElementById("carousel-meta"),
 };
@@ -50,6 +51,47 @@ const formatDate = (value) => {
 const normalize = (value) => String(value || "").toLowerCase();
 const normalizeState = (value) => String(value || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 const normalizeKey = (value) => String(value || "").trim().toLowerCase();
+
+const hasLegacyVisit = (visit) => {
+  if (!visit) return false;
+  if (visit.visited) return true;
+  if (visit.visit_date || visit.visit_note || visit.review || visit.notes) return true;
+  if (visit.rating) return true;
+  if (visit.highlights && visit.highlights.length) return true;
+  if (visit.facts && visit.facts.length) return true;
+  if (visit.stamps && visit.stamps.length) return true;
+  if (visit.photos && visit.photos.length) return true;
+  return false;
+};
+
+const toLegacyVisit = (visit) => ({
+  visit_date: visit.visit_date || "",
+  visit_note: visit.visit_note || "",
+  rating: visit.rating ?? null,
+  review: visit.review || "",
+  entry: visit.entry || visit.notes || "",
+  highlights: visit.highlights || [],
+  facts: visit.facts || [],
+  stamps: visit.stamps || [],
+  photos: visit.photos || [],
+});
+
+const getVisitEntries = (visit) => {
+  const entries = Array.isArray(visit?.visits) ? visit.visits.filter(Boolean) : [];
+  if (entries.length) return entries;
+  if (hasLegacyVisit(visit)) return [toLegacyVisit(visit)];
+  return [];
+};
+
+const getLatestVisit = (visits) => {
+  if (!visits.length) return null;
+  const withDates = visits
+    .map((entry) => ({ entry, date: parseDate(entry.visit_date) }))
+    .filter((item) => item.date)
+    .sort((a, b) => b.date - a.date);
+  if (withDates.length) return withDates[0].entry;
+  return visits[0];
+};
 
 const STATE_NAMES = {
   AL: "Alabama",
@@ -121,7 +163,15 @@ const mergeParksWithVisits = (parks, visits) => {
   return (parks || []).map((park) => {
     const key = normalizeKey(park.unit_code || park.id);
     const visit = visitMap.get(key);
-    if (!visit) return park;
+    if (!visit) return { ...park, visits: [] };
+    const entries = getVisitEntries(visit);
+    const latest = getLatestVisit(entries);
+    const allStamps = entries.flatMap((entry) =>
+      Array.isArray(entry.stamps) ? entry.stamps : []
+    );
+    const allPhotos = entries.flatMap((entry) =>
+      Array.isArray(entry.photos) ? entry.photos : []
+    );
     return {
       ...park,
       ...visit,
@@ -133,6 +183,17 @@ const mergeParksWithVisits = (parks, visits) => {
       states: park.states,
       lat: park.lat,
       lng: park.lng,
+      visits: entries,
+      visited: entries.length > 0,
+      visit_date: latest?.visit_date || "",
+      visit_note: latest?.visit_note || "",
+      rating: latest?.rating ?? null,
+      review: latest?.review || "",
+      notes: latest?.entry || latest?.notes || "",
+      highlights: latest?.highlights || [],
+      facts: latest?.facts || [],
+      stamps: allStamps,
+      photos: allPhotos,
     };
   });
 };
@@ -162,6 +223,13 @@ const parseStateInput = (value) => {
 
 const getSearchText = (park) => {
   const stateNames = (park.states || []).map((code) => STATE_NAMES[code] || "");
+  const visitTexts = (park.visits || []).flatMap((visit) => [
+    visit.review,
+    visit.entry,
+    visit.notes,
+    visit.visit_note,
+    (visit.facts || []).map((fact) => fact.value || "").join(" "),
+  ]);
   const pieces = [
     park.name,
     park.type,
@@ -171,6 +239,7 @@ const getSearchText = (park) => {
     stateNames.join(" "),
     park.review,
     park.notes,
+    visitTexts.join(" "),
   ];
   return normalize(pieces.join(" "));
 };
@@ -201,6 +270,15 @@ const computeStats = (parks) => {
   elements.latestVisitNote.textContent = recentVisit
     ? formatDate(recentVisit.park.visit_date)
     : "";
+  if (elements.latestVisit) {
+    if (recentVisit) {
+      elements.latestVisit.href = `park.html?id=${encodeURIComponent(recentVisit.park.id)}`;
+      elements.latestVisit.setAttribute("aria-disabled", "false");
+    } else {
+      elements.latestVisit.href = "#";
+      elements.latestVisit.setAttribute("aria-disabled", "true");
+    }
+  }
   elements.favoriteRating.textContent = avgRatingValue === "-" ? "-" : `${avgRatingValue} / 5`;
 };
 
@@ -216,12 +294,35 @@ const shuffle = (items) => {
 const buildCarouselItems = (parks) => {
   const items = [];
   parks.forEach((park) => {
+    const visits = park.visits || [];
+    if (visits.length) {
+      visits.forEach((visit) => {
+        const photos = Array.isArray(visit.photos) ? visit.photos : [];
+        photos.forEach((photo) => {
+          if (!photo || !photo.image) return;
+          items.push({
+            image: photo.image,
+            caption: photo.caption || "",
+            parkName: park.name,
+            parkId: park.id,
+            type: park.type,
+            region: park.region,
+            date: visit.visit_date,
+            note: visit.visit_note || visit.entry || visit.notes || "",
+            rating: visit.rating,
+          });
+        });
+      });
+      return;
+    }
+
     (park.photos || []).forEach((photo) => {
       if (!photo || !photo.image) return;
       items.push({
         image: photo.image,
         caption: photo.caption || "",
         parkName: park.name,
+        parkId: park.id,
         type: park.type,
         region: park.region,
         date: park.visit_date,
@@ -241,6 +342,10 @@ const startCarousel = (items) => {
     elements.carouselImage.alt = "Add photos to the carousel";
     elements.carouselCaption.textContent = "Add photos in the editor to start the carousel.";
     elements.carouselMeta.textContent = "";
+    if (elements.carouselLink) {
+      elements.carouselLink.href = "#";
+      elements.carouselLink.setAttribute("aria-disabled", "true");
+    }
     return;
   }
 
@@ -253,12 +358,21 @@ const startCarousel = (items) => {
       elements.carouselImage.src = item.image;
       elements.carouselImage.alt = item.caption || item.parkName;
       const dateText = formatDate(item.date);
-      elements.carouselCaption.textContent = `${item.parkName} • ${dateText} • ${item.type}`;
+      elements.carouselCaption.textContent = "";
+      const parkLink = document.createElement("a");
+      parkLink.href = `park.html?id=${encodeURIComponent(item.parkId)}`;
+      parkLink.textContent = item.parkName;
+      elements.carouselCaption.appendChild(parkLink);
+      elements.carouselCaption.append(` • ${dateText} • ${item.type}`);
 
       const metaParts = [item.region];
       if (item.rating) metaParts.push(`Rating ${item.rating}/5`);
       if (item.note) metaParts.push(item.note);
       elements.carouselMeta.textContent = metaParts.filter(Boolean).join(" • ");
+      if (elements.carouselLink) {
+        elements.carouselLink.href = `park.html?id=${encodeURIComponent(item.parkId)}`;
+        elements.carouselLink.setAttribute("aria-disabled", "false");
+      }
 
       elements.carouselImage.classList.remove("is-fading");
     }, 300);

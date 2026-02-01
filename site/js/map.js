@@ -19,6 +19,47 @@ const normalize = (value) => String(value || "").toLowerCase();
 const normalizeState = (value) => String(value || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 const normalizeKey = (value) => String(value || "").trim().toLowerCase();
 
+const hasLegacyVisit = (visit) => {
+  if (!visit) return false;
+  if (visit.visited) return true;
+  if (visit.visit_date || visit.visit_note || visit.review || visit.notes) return true;
+  if (visit.rating) return true;
+  if (visit.highlights && visit.highlights.length) return true;
+  if (visit.facts && visit.facts.length) return true;
+  if (visit.stamps && visit.stamps.length) return true;
+  if (visit.photos && visit.photos.length) return true;
+  return false;
+};
+
+const toLegacyVisit = (visit) => ({
+  visit_date: visit.visit_date || "",
+  visit_note: visit.visit_note || "",
+  rating: visit.rating ?? null,
+  review: visit.review || "",
+  entry: visit.entry || visit.notes || "",
+  highlights: visit.highlights || [],
+  facts: visit.facts || [],
+  stamps: visit.stamps || [],
+  photos: visit.photos || [],
+});
+
+const getVisitEntries = (visit) => {
+  const entries = Array.isArray(visit?.visits) ? visit.visits.filter(Boolean) : [];
+  if (entries.length) return entries;
+  if (hasLegacyVisit(visit)) return [toLegacyVisit(visit)];
+  return [];
+};
+
+const getLatestVisit = (visits) => {
+  if (!visits.length) return null;
+  const withDates = visits
+    .map((entry) => ({ entry, date: new Date(entry.visit_date) }))
+    .filter((item) => !Number.isNaN(item.date.getTime()))
+    .sort((a, b) => b.date - a.date);
+  if (withDates.length) return withDates[0].entry;
+  return visits[0];
+};
+
 const STATE_NAMES = {
   AL: "Alabama",
   AK: "Alaska",
@@ -89,7 +130,15 @@ const mergeParksWithVisits = (parks, visits) => {
   return (parks || []).map((park) => {
     const key = normalizeKey(park.unit_code || park.id);
     const visit = visitMap.get(key);
-    if (!visit) return park;
+    if (!visit) return { ...park, visits: [] };
+    const entries = getVisitEntries(visit);
+    const latest = getLatestVisit(entries);
+    const allStamps = entries.flatMap((entry) =>
+      Array.isArray(entry.stamps) ? entry.stamps : []
+    );
+    const allPhotos = entries.flatMap((entry) =>
+      Array.isArray(entry.photos) ? entry.photos : []
+    );
     return {
       ...park,
       ...visit,
@@ -101,6 +150,17 @@ const mergeParksWithVisits = (parks, visits) => {
       states: park.states,
       lat: park.lat,
       lng: park.lng,
+      visits: entries,
+      visited: entries.length > 0,
+      visit_date: latest?.visit_date || "",
+      visit_note: latest?.visit_note || "",
+      rating: latest?.rating ?? null,
+      review: latest?.review || "",
+      notes: latest?.entry || latest?.notes || "",
+      highlights: latest?.highlights || [],
+      facts: latest?.facts || [],
+      stamps: allStamps,
+      photos: allPhotos,
     };
   });
 };
@@ -130,6 +190,13 @@ const parseStateInput = (value) => {
 
 const getSearchText = (park) => {
   const stateNames = (park.states || []).map((code) => STATE_NAMES[code] || "");
+  const visitTexts = (park.visits || []).flatMap((visit) => [
+    visit.review,
+    visit.entry,
+    visit.notes,
+    visit.visit_note,
+    (visit.facts || []).map((fact) => fact.value || "").join(" "),
+  ]);
   const pieces = [
     park.name,
     park.type,
@@ -139,6 +206,7 @@ const getSearchText = (park) => {
     stateNames.join(" "),
     park.review,
     park.notes,
+    visitTexts.join(" "),
   ];
   return normalize(pieces.join(" "));
 };

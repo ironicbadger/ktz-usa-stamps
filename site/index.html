@@ -31,7 +31,7 @@
         </div>
       </div>
       <nav class="nav-actions">
-        <a class="btn ghost" href="admin/">Open Editor</a>
+        <a class="btn ghost" href="admin/" target="_blank" rel="noopener">Open Editor</a>
         <a class="btn ghost" href="map.html">Full Map</a>
         <a class="btn" href="#parks">Browse Parks</a>
       </nav>
@@ -47,13 +47,15 @@
             note your favorite moments, and see progress across the map.
           </p>
           <div class="hero-actions">
-            <a class="btn" href="admin/">Add a visit</a>
+            <a class="btn" href="admin/" target="_blank" rel="noopener">Add a visit</a>
             <a class="btn ghost" href="#map">Jump to the map</a>
           </div>
         </div>
         <div class="hero-card carousel">
           <div class="carousel-frame">
-            <img id="carousel-image" class="carousel-image" src="assets/placeholder.svg" alt="" />
+            <a id="carousel-link" href="#">
+              <img id="carousel-image" class="carousel-image" src="assets/placeholder.svg" alt="" />
+            </a>
             <div class="carousel-overlay">
               <p class="carousel-title">Recent memories</p>
               <p id="carousel-caption" class="carousel-caption">Add photos in the editor to start the carousel.</p>
@@ -87,7 +89,7 @@
         </div>
         <div class="stat">
           <p class="stat-label">Most recent stamp</p>
-          <div class="stat-value" id="latest-visit">Loading...</div>
+          <a class="stat-value stat-link" id="latest-visit" href="#">Loading...</a>
           <p class="stat-sub" id="latest-visit-note"></p>
         </div>
         <div class="stat">
@@ -164,7 +166,7 @@
 
     <footer class="site-footer">
       <p>Built for collecting Passport stamps and memories across the USA.</p>
-      <a class="btn ghost" href="admin/">Update entries</a>
+      <a class="btn ghost" href="admin/" target="_blank" rel="noopener">Update entries</a>
     </footer>
 
     <script

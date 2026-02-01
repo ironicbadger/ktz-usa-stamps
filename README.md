@@ -32,6 +32,17 @@ as the read-only baseline.
 2. Commit and push.
 3. Visit `/admin/` on your deployed site, log in, and edit parks.
 
+### Local-first workflow (single command)
+
+Run the local site + Decap local backend + auto rebuild in one command:
+
+```bash
+python3 scripts/dev-local.py
+```
+
+Then open `http://localhost:8000/admin/`. Publishing edits will only touch your
+local files. When you're ready, commit and push.
+
 ### OAuth proxy notes
 
 GitHub authentication for Decap CMS requires an OAuth provider when you are not

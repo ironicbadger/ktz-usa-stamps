@@ -85,16 +85,6 @@ def build_parks() -> dict:
                 "region": region,
                 "lat": geom.get("y"),
                 "lng": geom.get("x"),
-                "visited": False,
-                "visit_date": "",
-                "visit_note": "",
-                "rating": None,
-                "review": "",
-                "notes": "",
-                "highlights": [],
-                "facts": [],
-                "stamps": [],
-                "photos": [],
             }
         )
 

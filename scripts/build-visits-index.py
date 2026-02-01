@@ -19,6 +19,12 @@ def has_content(visit: dict) -> bool:
         return True
     if visit.get("rating"):
         return True
+    if visit.get("elevation"):
+        return True
+    if visit.get("established"):
+        return True
+    if visit.get("visits"):
+        return True
     if visit.get("review"):
         return True
     if visit.get("notes"):

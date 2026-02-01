@@ -6,6 +6,9 @@ backend:
   # base_url: https://YOUR-OAUTH-PROXY.example.com
   # auth_endpoint: auth
 
+# Enable local-first editing when running on localhost.
+local_backend: true
+
 media_folder: "site/uploads"
 public_folder: "/uploads"
 
@@ -27,61 +30,84 @@ collections:
         widget: "string"
         required: false
         hint: "Display name shown in the editor list"
-      - label: "Visited"
-        name: "visited"
-        widget: "boolean"
-        default: false
-      - label: "Visit date"
-        name: "visit_date"
+      - label: "Elevation (min–max)"
+        name: "elevation"
         widget: "string"
         required: false
-        hint: "Type a date (recommended format: YYYY-MM-DD)"
-      - label: "Visit note"
-        name: "visit_note"
+        hint: "Optional. Example: -282 to 11,049 ft or 2,000–3,300 m"
+      - label: "Established"
+        name: "established"
         widget: "string"
         required: false
-      - label: "Rating"
-        name: "rating"
-        widget: "number"
-        required: false
-        value_type: "int"
-        min: 1
-        max: 5
-      - label: "Review"
-        name: "review"
-        widget: "text"
-        required: false
-      - label: "Notes"
-        name: "notes"
-        widget: "text"
-        required: false
+        hint: "Optional. Example: 1928-02-25 or Aug 2000"
       - label: "Official NPS URL"
         name: "nps_url"
         widget: "string"
         required: false
         hint: "Optional override. Default uses https://www.nps.gov/{unit_code}/index.htm"
-      - label: "Highlights"
-        name: "highlights"
+      - label: "Visits"
+        name: "visits"
         widget: "list"
         required: false
-      - label: "Factoids"
-        name: "facts"
-        widget: "list"
-        required: false
+        summary: "{{fields.visit_date}}"
         fields:
-          - { label: "Label", name: "label", widget: "string" }
-          - { label: "Value", name: "value", widget: "string" }
-      - label: "Stamp photos"
-        name: "stamps"
-        widget: "list"
-        required: false
-        fields:
-          - { label: "Caption", name: "caption", widget: "string", required: false }
-          - { label: "Image", name: "image", widget: "image" }
-      - label: "Photos"
-        name: "photos"
-        widget: "list"
-        required: false
-        fields:
-          - { label: "Caption", name: "caption", widget: "string", required: false }
-          - { label: "Image", name: "image", widget: "image" }
+          - label: "Visit date"
+            name: "visit_date"
+            widget: "string"
+            required: false
+            hint: "Type a date (recommended format: YYYY-MM-DD)"
+          - label: "Visit note"
+            name: "visit_note"
+            widget: "string"
+            required: false
+          - label: "Rating"
+            name: "rating"
+            widget: "number"
+            required: false
+            value_type: "int"
+            min: 1
+            max: 5
+            hint: "Optional. Leave blank if you don't want to rate."
+          - label: "Review"
+            name: "review"
+            widget: "text"
+            required: false
+          - label: "Entry"
+            name: "notes"
+            widget: "text"
+            required: false
+            hint: "Write a short trip entry or story for this visit."
+          - label: "Blog post URL"
+            name: "blog_url"
+            widget: "string"
+            required: false
+            hint: "Optional link to a longer blog post."
+          - label: "Blog snippet"
+            name: "blog_snippet"
+            widget: "text"
+            required: false
+            hint: "Optional teaser text. Leave blank to auto-grab from same-origin or blog.ktz.me posts."
+          - label: "Factoids"
+            name: "facts"
+            widget: "list"
+            required: false
+            fields:
+              - { label: "Label", name: "label", widget: "string" }
+              - { label: "Value", name: "value", widget: "string" }
+          - label: "Stamp photos"
+            name: "stamps"
+            widget: "list"
+            required: false
+            fields:
+              - { label: "Caption", name: "caption", widget: "string", required: false }
+              - { label: "Date", name: "date", widget: "string", required: false }
+              - { label: "Featured", name: "featured", widget: "boolean", required: false }
+              - { label: "Image", name: "image", widget: "image" }
+          - label: "Photos"
+            name: "photos"
+            widget: "list"
+            required: false
+            fields:
+              - { label: "Caption", name: "caption", widget: "string", required: false }
+              - { label: "Use as header", name: "header", widget: "boolean", required: false }
+              - { label: "Image", name: "image", widget: "image" }

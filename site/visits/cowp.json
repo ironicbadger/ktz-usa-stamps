@@ -1,15 +1,20 @@
 {
-  "unit_code": "COWP",
   "park_name": "Cowpens National Battlefield",
-  "visited": false,
+  "photos": [],
+  "notes": "",
+  "nps_url": "",
   "visit_date": "",
   "visit_note": "",
-  "rating": null,
-  "review": "",
-  "notes": "",
-  "highlights": [],
   "facts": [],
+  "visits": [
+    {
+      "rating": 3
+    }
+  ],
+  "unit_code": "COWP",
+  "visited": false,
   "stamps": [],
-  "photos": [],
-  "nps_url": ""
+  "review": "",
+  "rating": null,
+  "highlights": []
 }

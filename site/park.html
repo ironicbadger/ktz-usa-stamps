@@ -41,15 +41,13 @@
           hidden
           >Official site</a
         >
-        <a class="btn" href="admin/">Edit entry</a>
+        <a class="btn" id="edit-entry-link" href="admin/" target="_blank" rel="noopener"
+          >Edit entry</a
+        >
       </nav>
     </header>
 
     <main>
-      <section class="park-banner" id="park-banner" hidden>
-        <img id="park-banner-image" alt="" />
-        <div class="park-banner-caption" id="park-banner-caption"></div>
-      </section>
       <section class="detail-hero">
         <div>
           <p class="eyebrow" id="park-region"></p>
@@ -61,11 +59,20 @@
             <span id="park-rating"></span>
           </div>
         </div>
-        <div class="detail-card">
-          <p class="detail-card-label">Last visit</p>
-          <p class="detail-card-value" id="park-visit-date">Loading...</p>
-          <p class="detail-card-note" id="park-visit-note"></p>
+        <div class="detail-pills">
+          <div class="detail-card">
+            <p class="detail-card-label">Last visit</p>
+            <p class="detail-card-value" id="park-visit-date">Loading...</p>
+            <p class="detail-card-note" id="park-visit-note"></p>
+          </div>
+          <div class="featured-stamp" id="featured-stamp" hidden>
+            <img id="featured-stamp-image" alt="" />
+          </div>
         </div>
+      </section>
+      <section class="park-banner" id="park-banner" hidden>
+        <img id="park-banner-image" alt="" />
+        <div class="park-banner-caption" id="park-banner-caption"></div>
       </section>
 
       <section class="detail-layout">
@@ -75,20 +82,8 @@
             <p id="park-review"></p>
           </div>
           <div class="detail-block">
-            <h2>Highlights</h2>
-            <ul id="park-highlights"></ul>
-          </div>
-          <div class="detail-block">
-            <h2>Trip notes</h2>
-            <p id="park-notes"></p>
-          </div>
-          <div class="detail-block">
-            <h2>Photos</h2>
-            <div id="park-photos" class="photo-grid"></div>
-          </div>
-          <div class="detail-block">
-            <h2>Stamp collection</h2>
-            <div id="park-stamps" class="photo-grid"></div>
+            <h2>Visit history</h2>
+            <div id="park-visits" class="visit-list"></div>
           </div>
         </div>
         <aside class="detail-side">
@@ -106,7 +101,7 @@
 
     <footer class="site-footer">
       <p>Built for collecting Passport stamps and memories across the USA.</p>
-      <a class="btn ghost" href="admin/">Update entries</a>
+      <a class="btn ghost" href="admin/" target="_blank" rel="noopener">Update entries</a>
     </footer>
 
     <script

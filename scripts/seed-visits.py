@@ -28,17 +28,10 @@ def main() -> None:
         visit = {
             "unit_code": unit_code,
             "park_name": park.get("name", ""),
-            "visited": False,
-            "visit_date": "",
-            "visit_note": "",
-            "rating": None,
-            "review": "",
-            "notes": "",
-            "highlights": [],
-            "facts": [],
-            "stamps": [],
-            "photos": [],
+            "elevation": "",
+            "established": "",
             "nps_url": "",
+            "visits": [],
         }
         path.write_text(json.dumps(visit, indent=2, ensure_ascii=False) + "\n")
         created += 1
