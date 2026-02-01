@@ -117,6 +117,16 @@ python3 scripts/build-parks.py
 The script overwrites `site/data/parks.json` and preserves the schema used by
 the UI and CMS.
 
+## Optional: Add official park banner images
+
+You can pull hero/banner images from the official NPS API (requires a free API
+key). The script enriches `site/data/parks.json` with `hero_image` and `nps_url`
+fields used on the park detail pages.
+
+```bash
+NPS_API_KEY=YOUR_KEY python3 scripts/enrich-park-images.py
+```
+
 ## Customization ideas
 
 - Add more filters (by state, by stamp type, by trip year).

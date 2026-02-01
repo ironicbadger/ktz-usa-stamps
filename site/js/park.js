@@ -17,6 +17,10 @@ const elements = {
   stamps: document.getElementById("park-stamps"),
   facts: document.getElementById("park-facts"),
   map: document.getElementById("park-map"),
+  officialLink: document.getElementById("park-site-link"),
+  banner: document.getElementById("park-banner"),
+  bannerImage: document.getElementById("park-banner-image"),
+  bannerCaption: document.getElementById("park-banner-caption"),
 };
 
 const parseDate = (value) => {
@@ -139,6 +143,18 @@ const renderMap = (park) => {
   L.marker([park.lat, park.lng]).addTo(map).bindPopup(park.name).openPopup();
 };
 
+const getOfficialUrl = (park) => {
+  if (park.nps_url) return park.nps_url;
+  if (!park.unit_code) return "";
+  return `https://www.nps.gov/${park.unit_code.toLowerCase()}/index.htm`;
+};
+
+const getHeroImage = (park) => {
+  if (park.hero_image && park.hero_image.url) return park.hero_image;
+  if (park.hero_image_url) return { url: park.hero_image_url };
+  return null;
+};
+
 const init = async () => {
   const params = new URLSearchParams(window.location.search);
   const parkId = params.get("id");
@@ -174,6 +190,25 @@ const init = async () => {
     elements.visitNote.textContent = park.visit_note || "";
     elements.review.textContent = park.review || "No review yet.";
     elements.notes.textContent = park.notes || "No notes yet.";
+
+    const hero = getHeroImage(park);
+    if (hero && elements.banner && elements.bannerImage) {
+      elements.bannerImage.src = hero.url;
+      elements.bannerImage.alt = hero.alt || hero.caption || park.name || "Park banner";
+      if (elements.bannerCaption) {
+        const parts = [];
+        if (hero.caption) parts.push(hero.caption);
+        if (hero.credit) parts.push(`Photo credit: ${hero.credit}`);
+        elements.bannerCaption.textContent = parts.join(" • ");
+      }
+      elements.banner.hidden = false;
+    }
+
+    const officialUrl = getOfficialUrl(park);
+    if (officialUrl && elements.officialLink) {
+      elements.officialLink.href = officialUrl;
+      elements.officialLink.hidden = false;
+    }
 
     renderList(elements.highlights, park.highlights, "No highlights yet.");
     renderPhotoGrid(elements.photos, park.photos, "No photos yet.");

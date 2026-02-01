@@ -394,6 +394,10 @@ a {
   color: var(--forest);
 }
 
+.park-site-link {
+  font-size: 0.9rem;
+}
+
 .map-panel {
   border-radius: var(--radius);
   overflow: hidden;
@@ -447,6 +451,28 @@ a {
   gap: 24px;
   align-items: center;
   margin-bottom: 32px;
+}
+
+.park-banner {
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  margin-bottom: 28px;
+  background: #ffffff;
+}
+
+.park-banner img {
+  width: 100%;
+  height: clamp(240px, 38vw, 380px);
+  object-fit: cover;
+  display: block;
+}
+
+.park-banner-caption {
+  padding: 12px 16px 16px;
+  font-size: 0.85rem;
+  color: rgba(29, 26, 23, 0.7);
+  border-top: 1px solid rgba(29, 26, 23, 0.08);
 }
 
 .detail-meta {
